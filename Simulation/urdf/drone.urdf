@@ -1,0 +1,192 @@
+<?xml version="1.0" ?>
+
+<robot name="drone">
+
+  <material name="arches-blue">
+    <color rgba="0.0 0.6235294117647059 0.8313725490196079 1" />
+  </material>
+
+  <link name="base">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.032"/>
+      <inertia ixx="0.00001" ixy="0.0" ixz="0.0" iyy="0.00001" iyz="0.0" izz="0.00002"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="drone.stl" scale="0.3 0.3 0.3"/>
+      </geometry>
+      <material name="arches-blue"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="drone.stl" scale="0.3 0.3 0.3"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="bar">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.165"/>
+      <mass value="0.001"/>
+      <inertia ixx="0.00008" ixy="0.0" ixz="0.0" iyy="0.00008" iyz="0.0" izz="0.0000000018"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.165"/>
+      <geometry>
+        <cylinder radius="0.0006" length="0.31"/>
+      </geometry>
+      <material name="arches-blue"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.165"/>
+      <geometry>
+        <cylinder radius="0.0006" length="0.31"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="ball_bot">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.002"/>
+      <inertia ixx="0.000005" ixy="0.0" ixz="0.0" iyy="0.000005" iyz="0.0" izz="0.000005"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.01"/>
+      </geometry>
+      <material name="arches-blue"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.01"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="ball_top">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.002"/>
+      <inertia ixx="0.000005" ixy="0.0" ixz="0.0" iyy="0.000005" iyz="0.0" izz="0.000005"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.01"/>
+      </geometry>
+      <material name="arches-blue"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.01"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="center_of_mass">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0"/>
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+    </inertial>
+  </link>
+
+  <link name="x-axis">
+     <visual>
+       <origin rpy="0 0 0" xyz="0 0 0.025"/>
+       <geometry>
+         <cylinder radius="0.00125" length="0.05"/>
+       </geometry>
+       <material name="red">
+         <color rgba="1 0 0 1"/>
+       </material>
+     </visual>
+     <inertial>
+       <mass value="0"/>
+       <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+     </inertial>
+   </link>
+
+   <link name="y-axis">
+     <visual>
+       <origin rpy="0 0 0" xyz="0 0 0.025"/>
+       <geometry>
+         <cylinder radius="0.00125" length="0.05"/>
+       </geometry>
+       <material name="green">
+         <color rgba="0 1 0 1"/>
+       </material>
+     </visual>
+     <inertial>
+       <mass value="0"/>
+       <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+     </inertial>
+   </link>
+
+   <!-- <link name="z-axis">
+     <visual>
+       <origin rpy="0 0 0" xyz="0 0 0.025"/>
+       <geometry>
+         <cylinder radius="0.00125" length="0.05"/>
+       </geometry>'
+       <material name="blue">
+         <color rgba="0 0 1 1"/>
+       </material>'
+     </visual>
+     <inertial>
+       <mass value="0"/>
+       <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+     </inertial>
+   </link> -->
+
+   <joint name="base_to_bar" type="continuous">
+     <parent link="base"/>
+     <child link="bar"/>
+     <axis xyz="1 0 0"/>
+     <origin xyz="0 0 0" rpy="0 0 0"/>
+     <limit lowereffort="1000" velocity="1000"/>
+   </joint>
+
+  <joint name="bar_to_ball_bot" type="fixed">
+    <parent link="bar"/>
+    <child link="ball_bot"/>
+    <origin xyz="0 0 0.03" rpy="0 0 0"/>
+  </joint>
+
+     <joint name="bar_to_ball_top" type="fixed">
+    <parent link="bar"/>
+    <child link="ball_top"/>
+    <origin xyz="0 0 0.31" rpy="0 0 0"/>
+  </joint>
+
+  <joint name="base_to_center_of_mass" type="fixed">
+    <parent link="base"/>
+    <child link="center_of_mass"/>
+  </joint>
+
+  <joint name="base-to-x" type="fixed">
+     <parent link="base"/>
+     <child link="x-axis"/>
+     <origin xyz="0 0 0" rpy="0 1.57 0"/>
+   </joint>
+
+   <joint name="base-to-y" type="fixed">
+     <parent link="base"/>
+     <child link="y-axis"/>
+     <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+   </joint>
+
+   <!-- <joint name="base-to-z" type="fixed">
+     <parent link="base"/>
+     <child link="z-axis"/>
+     <origin xyz="0 0 0" rpy="0 0 0"/>
+   </joint> -->
+
+</robot>
