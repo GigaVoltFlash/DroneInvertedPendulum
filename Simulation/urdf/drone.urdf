@@ -9,7 +9,7 @@
   <link name="base">
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="0.032"/>
+      <mass value="0.036"/>
       <inertia ixx="0.00001" ixy="0.0" ixz="0.0" iyy="0.00001" iyz="0.0" izz="0.00002"/>
     </inertial>
     <visual>
@@ -51,7 +51,7 @@
   <link name="ball_bot">
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="0.002"/>
+      <mass value="0.003"/>
       <inertia ixx="0.000005" ixy="0.0" ixz="0.0" iyy="0.000005" iyz="0.0" izz="0.000005"/>
     </inertial>
     <visual>
@@ -72,7 +72,7 @@
   <link name="ball_top">
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="0.002"/>
+      <mass value="0.003"/>
       <inertia ixx="0.000005" ixy="0.0" ixz="0.0" iyy="0.000005" iyz="0.0" izz="0.000005"/>
     </inertial>
     <visual>
@@ -149,7 +149,7 @@
    <joint name="base_to_bar" type="continuous">
      <parent link="base"/>
      <child link="bar"/>
-     <axis xyz="1 0 0"/>
+     <axis xyz="0 1 0"/>
      <origin xyz="0 0 0" rpy="0 0 0"/>
      <limit lowereffort="1000" velocity="1000"/>
    </joint>
