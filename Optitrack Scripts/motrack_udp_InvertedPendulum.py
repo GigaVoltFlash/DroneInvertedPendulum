@@ -276,144 +276,18 @@ if __name__ == '__main__': #{{{1
         data = s.recv(10240) #receive data and address from Optitrack Multicast
 		
         if data:
-     			
-			
-			
-			
-			
-			
-			
-			
-			
 			
             # Unpack data and skip if data isn't valid
             state, markerState = unPack(data)
             print markerState
             if (len(markerState) < 3):
                 data = struct.pack('fffffffff', lastState[0][0], lastState[0][1], lastState[0][2],lastState[1][0], lastState[1][1], lastState[1][2], lastState[2][0], lastState[2][1], lastState[2][2])
-                udpsock.sendto(data, ('192.168.1.103',3500))
+                udpsock.sendto(data, (address_list[0],3500))
             else:
                 data = struct.pack('fffffffff', markerState[0][0], markerState[0][1], markerState[0][2],markerState[1][0], markerState[1][1], markerState[1][2],markerState[2][0], markerState[2][1], markerState[2][2])
-                lastState = [markerState[0][0], markerState[0][1], markerState[0][2],markerState[1][0], markerState[1][1], markerState[1][2], markerState[2][0], markerState[2][1], markerState[2][2]]
-                udpsock.sendto(data, ('192.168.1.103',3500))
-            if not(state):
-                continue
-			
-            # Find number of rigid bodies
-            nRigidBodies = len(state)  # use this to check if untracked bodies count toward this sum
-            #print "Number of Rigid Bodies: ", nRigidBodies
-			
-            # Only use 3 trackables - need to change this to add tracked obstacles
-            # TODO: Need to add some sort of variable to replace 3
-            if nRigidBodies > 9:
-                state = state[0:8]
-            
-            # Append state variables to guarantee data for 3 trackables is sent
-            while nRigidBodies < 9:
-                state.append([0, 0, 0, 0, 0, 0, 0, 0, 0])
-                nRigidBodies = nRigidBodies + 1
+                lastState = markerState
+                udpsock.sendto(data, (address_list[0],3500))
 
-            # Initialize the data structures if this is the first time through
-            if len(mocap_state) == 0:
-                #print "Initializing."
-                for i in range(nRigidBodies): # this loops over [0,1,2,...,nRigidBodies-1]
-                    mocap_state.append([])
-                    status.append(0)
-                    rbid.append(0)
-                    pymsg.append('')
-                    prev_state.append([])
-                pymsg.append('')
-
-            #print "Made it past init."
-            # Loop over all rigid bodies and pack into pymsg[i]
-            for i in range(nRigidBodies):
-
-                rbid[i],fn,x,y,z,qw,qx,qy,qz = state[i] #split the state structure
-
-                # Optitrack Sends Quaternions so convert data
-                quat = Quaternion()
-                quat.w, quat.x, quat.y, quat.z = qw, qx, qy, qz
-                angles = optiquat2euler(quat.vec())
-                ## may need to rotate the yaw to match with robot
-                #angles0 = EulerAngles(0, -np.pi/2, np.pi/2)
-                #yaw = angles.theta;  # check this (is this psi?)
-
-                # Save position and orientation
-                mocap_state[i] = np.array([x, y, z, qx, qy, qz, qw, (angles.phi)*180/math.pi, (angles.theta)*180/math.pi, (angles.psi)*180/math.pi])
-
-                # If the rigid body is very close to the origin, assume it is untracked
-                # For this rigid body: set status to 0 if untracked, rigid body ID if tracked
-                threshold2 = 1e-9
-                d = np.dot(mocap_state[i][0:3], mocap_state[i][0:3])
-                if d < threshold2:
-                    status[i] = 0
-                else:
-                    status[i] = rbid[i]
-
-                if frame_counter>1:
-                    d = np.dot(mocap_state[i][0:3]-prev_state[i][0:3],mocap_state[i][0:3]-prev_state[i][0:3])
-                    if d < threshold2:
-                        status[i] = 0
-                    else:
-                        status[i] = rbid[i]
-
-                prev_state[i]=mocap_state[i]
-
-                # Pack X,Y,Z,ROLL,YAW,PITCH,STATUS(either 0 or RBID),FRAMECOUNT
-                #print "Packing rigid body number %d" % i
-                #pymsg[i] = struct.pack('ffffffffffff', mocap_state[i][0], mocap_state[i][1], mocap_state[i][2], mocap_state[i][3], mocap_state[i][4], mocap_state[i][5], mocap_state[i][6], mocap_state[i][7], mocap_state[i][8], mocap_state[i][9], status[i], frame_counter)  # sending rbid instead of status
-                #print markerState
-                pymsg[i] = struct.pack('fff', markerState[0], markerState[1],markerState[2])
-            # SORT the states so that they are in ascending order - How does this work?
-            #mydata = zip(rbid, pymsg)
-            #mydata_sorted = sorted(mydata)
-            #pymsg_sorted = [d[1] for d in mydata_sorted]
-            #pymsg_data = ''.join(pymsg_sorted)	
-
-            # Combine data for all rigid bodies
-            #pymsg[nRigidBodies] = struct.pack('f', frame_counter)
-            #pymsg_data = ''.join(pymsg)	# Will this join the data?
-
-
-
-            # SEND filter_state over UDP
-            #target = 0
-            #for address in address_list:
-            #print "len(pymsg_data) = ", len(pymsg_data)
-            #print map(ord,pymsg_data)
-            #    if status[target] != 0:
-            #        udpsock.sendto(pymsg[target], (address, udp_port))
-            #    target = target + 1
-
-            #if frame_counter % 50 == 0:
-            #    #print "len(pymsg_data) = ", len(pymsg_data)
-            #    print "rbid       status      x          z          yaw"
-            #    for i in range(nRigidBodies):
-            #        print "%f         %f          %.2f       %.2f       %.2f" % (rbid[i],status[i],mocap_state[i][0], mocap_state[i][2], mocap_state[i][4])
-
-            #frame_counter = frame_counter + 1
-
-            # SEND filter_state over UDP
-            if frame_counter % 25 == 0:
-                printnow = 1
-                print "rbid    status       x          y          z         roll         yaw           pitch"
-            else:
-                printnow = 0
-           
-            #for i in range(nRigidBodies):
-            #print "len(pymsg_data) = ", len(pymsg_data)
-            #print map(ord,pymsg_data)
-                #if status[i] != 0:
-                    #udpsock.sendto(pymsg[i], (address_list[rbid[i]-1], udp_port))
-                    #if printnow == 1:
-                        #print "Sending to: %s" % (address_list[rbid[i]-1])
-                #if printnow == 1:
-                    #print "%.0f         %.0f          %.3f       %.3f       %.3f         %.3f       %.3f       %.3f" % (rbid[i], status[i], mocap_state[i][0], mocap_state[i][1], mocap_state[i][2], mocap_state[i][7], mocap_state[i][8], mocap_state[i][9])
-       
-            print 'heello'
-            frame_counter = frame_counter + 1
-            pymsg[0] = struct.pack('fff', markerState[0], markerState[1],markerState[2])
-            print pymsg[0]
     
 
 
