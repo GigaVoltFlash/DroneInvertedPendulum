@@ -52,7 +52,7 @@ from utils import *
 #drone_port = 3500
 udp_port = 3500
 # address_list = ["192.168.1.166"]
-address_list = ["192.168.1.120"]
+address_list = ["192.168.1.103"]
 
             
 # OptiTrack Computer IP address
@@ -265,7 +265,7 @@ if __name__ == '__main__': #{{{1
     status = []
     rbid = [] # rigid body id
     pymsg = [] 
-	
+    lastState = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0,0.0,0.0]]
     print "begin recv'ing"
 	
     frame_counter = 1.
@@ -289,8 +289,13 @@ if __name__ == '__main__': #{{{1
             # Unpack data and skip if data isn't valid
             state, markerState = unPack(data)
             print markerState
-            data = struct.pack('ffffff', markerState[0][0], markerState[0][1], markerState[0][2],markerState[1][0], markerState[1][1], markerState[1][2])
-            udpsock.sendto(data, ('192.168.1.120',3500))
+            if (len(markerState) < 3):
+                data = struct.pack('fffffffff', lastState[0][0], lastState[0][1], lastState[0][2],lastState[1][0], lastState[1][1], lastState[1][2], lastState[2][0], lastState[2][1], lastState[2][2])
+                udpsock.sendto(data, ('192.168.1.103',3500))
+            else:
+                data = struct.pack('fffffffff', markerState[0][0], markerState[0][1], markerState[0][2],markerState[1][0], markerState[1][1], markerState[1][2],markerState[2][0], markerState[2][1], markerState[2][2])
+                lastState = [markerState[0][0], markerState[0][1], markerState[0][2],markerState[1][0], markerState[1][1], markerState[1][2], markerState[2][0], markerState[2][1], markerState[2][2]]
+                udpsock.sendto(data, ('192.168.1.103',3500))
             if not(state):
                 continue
 			
@@ -409,6 +414,7 @@ if __name__ == '__main__': #{{{1
             frame_counter = frame_counter + 1
             pymsg[0] = struct.pack('fff', markerState[0], markerState[1],markerState[2])
             print pymsg[0]
+    
 
 
             
