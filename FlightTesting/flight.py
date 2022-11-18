@@ -36,6 +36,7 @@ variables = [
     'ae483log.w_z',
     'ae483log.alpha',
     'ae483com.tick',
+    'ae483log.alpha_dot'
     'ae483log.x',
     'ae483log.y',
     'ae483log.z',
