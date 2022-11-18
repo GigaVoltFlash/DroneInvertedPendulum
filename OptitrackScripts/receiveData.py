@@ -21,17 +21,20 @@ def receive_data():
                 [x1,z1,y1, x2, z2, y2, x3, z3, y3] = struct.unpack('fffffffff', data)
                 # print(x1, y1, z1, x2, y2, z2)
 
-                # Point 1: reference point
-                # Point 2: Pivot
-                # Point 3: Tip
+                # Point 1: reference
+                # Point 2: Tip
+                # Point 3: Pivot
 
-                angle = -np.degrees(np.arctan((z3-z2)/np.sqrt(((x3-x2)**2) + ((y3-y2)**2))))
-                prev_angle = angle
 
-                u1 = np.array([x1, z1, y1])
-                u2 = np.array([x2, z2, y2])
-                u3 = np.array([x3, z3, y3])
+                u2 = np.array([x1, z1, y1])
+                u3 = np.array([x2, z2, y2])
+                u1 = np.array([x3, z3, y3])
 
+                angle = np.degrees(np.arctan((u2[1]-u3[1])/np.sqrt(((u2[0]-u3[0])**2) + ((u2[2]-u3[2])**2))))
+            
+                z_offset = np.array([0, u3[1] - u1[1], 0])
+
+                u1 += z_offset
 
                 v1 = u2 - u3 #Pivot to Tip
                 v2 = u1 - u3 #Pivot to Reference
@@ -41,13 +44,15 @@ def receive_data():
                 # print(angle, comp)
                 # print(u1, u2, u3)
                 # print(v1, v2)
+                # time.sleep(4)
                 # print(x2 - x3, x1 - x3)
                 # print(comp)
 
 
                 if (comp < 0):
-                    angle = -angle
-
+                    angle = angle - 90
+                else:
+                    angle = 90 - angle
 
                 #angle = 90 + angle
                 print(angle)
