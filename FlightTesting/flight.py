@@ -19,6 +19,8 @@ from cflib.crtp.crtpstack import CRTPPacket
 # channel is X, the uri should be 'radio://0/X/2M/E7E7E7E7E7')
 uri = 'radio://0/23/2M/E7E7E7E7E7'
 
+prev_angle = 0
+
 # Specify the variables we want to log (all at 100 Hz)
 variables = [
     # State
@@ -169,9 +171,9 @@ def receive_data(s):
     if not data:
         return prev_angle
     else:
-        # print(data)
+        
         [x1,z1,y1, x2, z2, y2, x3, z3, y3] = struct.unpack('fffffffff', data)
-        # print(x1, y1, z1, x2, y2, z2)
+        
 
         
         # Point 1: reference
@@ -207,6 +209,7 @@ def receive_data(s):
         else:
             angle = 90 - angle
 
+        prev_angle = angle
         return angle
 
 
@@ -253,25 +256,6 @@ if __name__ == '__main__':
         alpha = receive_data(s)
 
         print(alpha)
-
-        # Create a "packet" with these data
-        # 
-        # You can change the channel (see crtp_ae483_service.c in the firmware
-        # for why you might want to do this), but you must not change the port!
-        #
-        #
-        # pk = CRTPPacket()
-        # pk.port = 0x0A
-        # pk.channel = 0
-        # pk.data = struct.pack('f', alpha)
-
-        # # Send the data packet to the drone
-        # client.cf.send_packet(pk)
-
-        # # Sleep for 10 ms
-        # time.sleep(0.01)
-
-
         x = 1.0 + (0.01 * i)
         y = 2.0 + (0.01 * i)
         z = 3.0 + (0.01 * i)
