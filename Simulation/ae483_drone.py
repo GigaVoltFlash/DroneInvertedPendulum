@@ -305,6 +305,10 @@ class Simulator:
                             linearVelocity=v_world,
                             angularVelocity=w_world)
 
+        # Pendulum angle
+        alpha = state['alpha']
+        pybullet.resetJointState(drone['id'], 0, alpha)
+        
         # Reset camera
         self.camera()
 
