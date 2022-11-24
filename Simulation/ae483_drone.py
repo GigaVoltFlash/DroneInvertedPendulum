@@ -280,6 +280,7 @@ class Simulator:
             'w_y': w[1],
             'w_z': w[2],
             'alpha': pendulum[0],
+            'alpha_dot': pendulum[1]
         }
         return state
 
@@ -308,7 +309,7 @@ class Simulator:
         # Pendulum angle
         alpha = state['alpha']
         pybullet.resetJointState(drone['id'], 0, alpha)
-        
+
         # Reset camera
         self.camera()
 
