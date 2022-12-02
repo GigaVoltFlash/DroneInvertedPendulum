@@ -19,7 +19,6 @@ from cflib.crtp.crtpstack import CRTPPacket
 # channel is X, the uri should be 'radio://0/X/2M/E7E7E7E7E7')
 uri = 'radio://0/23/2M/E7E7E7E7E7'
 
-prev_angle = 0
 
 # Specify the variables we want to log (all at 100 Hz)
 variables = [
@@ -38,7 +37,7 @@ variables = [
     'ae483log.w_z',
     'ae483log.alpha',
     'ae483com.tick',
-    'ae483log.alpha_dot'
+    'ae483log.alpha_dot',
     'ae483log.x',
     'ae483log.y',
     'ae483log.z',
@@ -169,21 +168,21 @@ class SimpleClient:
 def receive_data(s):
     data = s.recvfrom(1024)[0]
     if not data:
-        return prev_angle
+        return prev_alpha
     else:
-        
+        # print(data)
         [x1,z1,y1, x2, z2, y2, x3, z3, y3] = struct.unpack('fffffffff', data)
-        
+        # print(x1, y1, z1, x2, y2, z2)
 
-        
         # Point 1: reference
         # Point 2: Tip
         # Point 3: Pivot
 
-
         u2 = np.array([x1, z1, y1])
-        u3 = np.array([x2, z2, y2])
-        u1 = np.array([x3, z3, y3])
+        u1 = np.array([x2, z2, y2])
+        u3 = np.array([x3, z3, y3])
+
+        
 
         angle = np.degrees(np.arctan((u2[1]-u3[1])/np.sqrt(((u2[0]-u3[0])**2) + ((u2[2]-u3[2])**2))))
     
@@ -209,18 +208,27 @@ def receive_data(s):
         else:
             angle = 90 - angle
 
-        prev_angle = angle
-        return angle
+        #angle = 90 + angle
+        # print(angle)
+        return np.radians(angle)
 
 
 if __name__ == '__main__':
     # Initialize everything
+
+
+    prev_alpha = 0
+    prev_time = time.time()
     logging.basicConfig(level=logging.ERROR)
     cflib.crtp.init_drivers()
     CLIENT_PORT = '3500'
 
+
+
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.bind(('0.0.0.0', int(CLIENT_PORT)))
+
+
 
 
 
@@ -246,19 +254,23 @@ if __name__ == '__main__':
     # client.move(0, 0.0, 0.15, 0.0, 1.0)
 
     # Iterate 100 times (example)
-    for i in range(2000):
+    for i in range(1000):
         # Either send a stop setpoint:
-        client.cf.commander.send_stop_setpoint()
+        # client.cf.commander.send_stop_setpoint()
         # Or send a position setpoint (for some choice of x, y, z, and yaw):
-        #  client.cf.commander.send_position_setpoint(x, y, z, yaw)
+        client.cf.commander.send_position_setpoint(0, 0, .25 ,0)
 
         # Define AE483-specific data to send (example)
+        # alpha = receive_data(s)
+        t = time.time()
         alpha = receive_data(s)
-
-        print(alpha)
+        # alpha = 0
+        alpha_dot = (alpha - prev_alpha)/(t - prev_time)
         x = 1.0 + (0.01 * i)
         y = 2.0 + (0.01 * i)
         z = 3.0 + (0.01 * i)
+
+
         
         # Create a "packet" with these data
         # 
@@ -269,10 +281,13 @@ if __name__ == '__main__':
         pk = CRTPPacket()
         pk.port = 0x0A
         pk.channel = 0
-        pk.data = struct.pack('<ffff', x, y, z, alpha)
-
+        # pk.data = struct.pack('<fff', x, y, z)
+        pk.data = struct.pack('<fffff', x, y, z, alpha, alpha_dot)
         # Send the data packet to the drone
         client.cf.send_packet(pk)
+
+        prev_alpha = alpha
+        prev_time = t
 
         # Sleep for 10 ms
         # time.sleep(0.01)
@@ -282,4 +297,4 @@ if __name__ == '__main__':
     client.disconnect()
 
     # Write data from flight
-    client.write_data('FlightData\FlightTestData_1.json')
+    client.write_data('FlightData\FlightTestData_4.json')

@@ -6,11 +6,7 @@
 #include "num.h"
 #include "math3d.h"
 
-// struct AE483Data
-// {
-//   /* data */
-//   float alpha;
-// } __attribute__((packed));
+
 
 
 // Sensor measurements
@@ -138,6 +134,7 @@ void ae483UpdateWithData(const struct AE483Data* data)
   //
   // Exactly what "x", "y", and "z" mean in this context is up to you.
   alpha = data->alpha;
+  alpha_dot = data->alpha_dot;
 
   x = data->x;
   y = data->y;
@@ -265,8 +262,6 @@ LOG_ADD(LOG_FLOAT,          alpha_dot,              &alpha_dot)
 LOG_ADD(LOG_FLOAT,          x,                      &x)
 LOG_ADD(LOG_FLOAT,          y,                      &y)
 LOG_ADD(LOG_FLOAT,          z,                      &z)
-// LOG_ADD(LOG_FLOAT, alpha, &alpha)
-// LOG_ADD(LOG_FLOAT, alpha_dot, &alpha_dot)
 LOG_GROUP_STOP(ae483log)
 
 //                1234567890123456789012345678 <-- max total length
