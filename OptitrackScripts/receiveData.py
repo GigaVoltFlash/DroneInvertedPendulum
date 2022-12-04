@@ -25,10 +25,12 @@ def receive_data():
                 # Point 2: Tip
                 # Point 3: Pivot
 
-
-                u2 = np.array([x1, z1, y1])
+                
+                u2= np.array([x1, z1, y1])
                 u3 = np.array([x2, z2, y2])
                 u1 = np.array([x3, z3, y3])
+
+                
 
                 angle = np.degrees(np.arctan((u2[1]-u3[1])/np.sqrt(((u2[0]-u3[0])**2) + ((u2[2]-u3[2])**2))))
             

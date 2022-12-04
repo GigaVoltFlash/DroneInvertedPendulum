@@ -11,6 +11,7 @@ struct AE483Data
   float z;
 
   float alpha;
+  float alpha_dot;
 } __attribute__((packed));
 
 void controllerAE483Init(void);
