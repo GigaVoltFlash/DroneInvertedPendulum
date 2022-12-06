@@ -26,8 +26,8 @@ def receive_data():
                 # Point 3: Pivot
 
                 
-                u2= np.array([x1, z1, y1])
-                u3 = np.array([x2, z2, y2])
+                u3 = np.array([x1, z1, y1])
+                u2 = np.array([x2, z2, y2])
                 u1 = np.array([x3, z3, y3])
 
                 
