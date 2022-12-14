@@ -192,8 +192,8 @@ def optitrack(queue: Queue, run_process: Value):
                 # Point 3: Pivot
 
                 u2 = np.array([x1, z1, y1])
-                u3 = np.array([x2, z2, y2])
-                u1 = np.array([x3, z3, y3])
+                u1 = np.array([x2, z2, y2])
+                u3 = np.array([x3, z3, y3])
 
                 
 
@@ -287,4 +287,4 @@ if __name__ == '__main__':
     optitrack_process.join()
 
     # Write data from flight
-    client.write_data('FlightData\FlightTestData_threaded.json')
+    client.write_data('FlightData\Flight_4.json')
