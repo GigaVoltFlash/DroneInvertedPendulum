@@ -31,7 +31,7 @@
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0.165"/>
       <mass value="0.001"/>
-      <inertia ixx="0.00008" ixy="0.0" ixz="0.0" iyy="0.00008" iyz="0.0" izz="0.0000000018"/>
+      <inertia ixx="0.00000" ixy="0.0" ixz="0.0" iyy="0.00000" iyz="0.0" izz="0.0000000018"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0.165"/>
@@ -52,7 +52,7 @@
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <mass value="0.003"/>
-      <inertia ixx="0.000005" ixy="0.0" ixz="0.0" iyy="0.000005" iyz="0.0" izz="0.000005"/>
+      <inertia ixx="0.000000" ixy="0.0" ixz="0.0" iyy="0.000000" iyz="0.0" izz="0.000005"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -73,7 +73,7 @@
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <mass value="0.003"/>
-      <inertia ixx="0.000005" ixy="0.0" ixz="0.0" iyy="0.000005" iyz="0.0" izz="0.000005"/>
+      <inertia ixx="0.000000" ixy="0.0" ixz="0.0" iyy="0.000000" iyz="0.0" izz="0.000005"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -151,7 +151,6 @@
      <child link="bar"/>
      <axis xyz="0 1 0"/>
      <origin xyz="0 0 0" rpy="0 0 0"/>
-     <limit lowereffort="1000" velocity="1000"/>
    </joint>
 
   <joint name="bar_to_ball_bot" type="fixed">
