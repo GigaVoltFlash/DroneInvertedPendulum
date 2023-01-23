@@ -18,7 +18,6 @@ def animator (times, state_data) :
     
     plt.style.use('dark_background')
     # fig = plt.figure()
-    # fig, (drone_ani, x_plot) = plt.subplots(2)
     fig, (drone_ani) = plt.subplots(1)
     drone_ani.set_title("Drone Balancing Inverted Pendulum in 2D SIM", color="orange")
     drone_ani.set_xlabel('x drone displacement (m)')
@@ -27,7 +26,7 @@ def animator (times, state_data) :
     # x_plot.set_title("X-Position from Origin", color="blue")
     # x_plot.set_xlabel('time (s)')
     # x_plot.set_ylabel('x-position (m)')
-    fig.tight_layout()
+    # fig.tight_layout()
 
     def get_pend_cordinates(alpha):
         """Return the (x, y) coordinates of the top of the pendulum at angle alpha."""
@@ -56,8 +55,9 @@ def animator (times, state_data) :
         return qx, qy
 
     def init():
-        drone_ani.set_xlim(-3., 3.)
-        drone_ani.set_ylim(2.7, 3.3)
+        # Keep Aspect Ratio a Square to avoid distortion
+        drone_ani.set_xlim(-1, 1)
+        drone_ani.set_ylim(2., 4.)
         drone_ani.add_patch(box)
 
     def animate(i):
