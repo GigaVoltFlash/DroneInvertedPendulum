@@ -18,14 +18,15 @@ def animator (times, state_data) :
     
     plt.style.use('dark_background')
     # fig = plt.figure()
-    fig, (drone_ani, x_plot) = plt.subplots(2)
+    # fig, (drone_ani, x_plot) = plt.subplots(2)
+    fig, (drone_ani) = plt.subplots(1)
     drone_ani.set_title("Drone Balancing Inverted Pendulum in 2D SIM", color="orange")
-    drone_ani.set_xlabel('height agl (m)')
-    drone_ani.set_ylabel('x-drone_aniis displacement (m)')
+    drone_ani.set_xlabel('x drone displacement (m)')
+    drone_ani.set_ylabel('height agl (m)')
 
-    x_plot.set_title("X-Position from Origin", color="blue")
-    x_plot.set_xlabel('time (s)')
-    x_plot.set_ylabel('x-position (m)')
+    # x_plot.set_title("X-Position from Origin", color="blue")
+    # x_plot.set_xlabel('time (s)')
+    # x_plot.set_ylabel('x-position (m)')
     fig.tight_layout()
 
     def get_pend_cordinates(alpha):
@@ -38,7 +39,7 @@ def animator (times, state_data) :
     box = patches.Rectangle((-0.5*drone_w, -drone_h), drone_w, drone_h, fc='w')
 
     ## X-Plot Animation Plot Setup
-    line, = x_plot.plot(0, 0)
+    # line, = x_plot.plot(0, 0)
     
 
     def rotate(origin, point, angle):
@@ -55,8 +56,8 @@ def animator (times, state_data) :
         return qx, qy
 
     def init():
-        drone_ani.set_xlim(-0.75, 0.75)
-        drone_ani.set_ylim(2.85, 3.25)
+        drone_ani.set_xlim(-3., 3.)
+        drone_ani.set_ylim(2.7, 3.3)
         drone_ani.add_patch(box)
 
     def animate(i):
