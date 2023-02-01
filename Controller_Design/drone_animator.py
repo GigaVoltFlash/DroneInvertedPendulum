@@ -56,8 +56,8 @@ def animator (times, state_data) :
 
     def init():
         # Keep Aspect Ratio a Square to avoid distortion
-        drone_ani.set_xlim(-1, 1)
-        drone_ani.set_ylim(2., 4.)
+        drone_ani.set_xlim(-1.5, 3.0)
+        drone_ani.set_ylim(1.5, 6.)
         drone_ani.add_patch(box)
 
     def animate(i):
