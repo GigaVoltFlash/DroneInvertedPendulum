@@ -56,8 +56,8 @@ def animator (times, state_data) :
 
     def init():
         # Keep Aspect Ratio a Square to avoid distortion
-        drone_ani.set_xlim(-1.5, 3.0)
-        drone_ani.set_ylim(1.5, 6.)
+        drone_ani.set_xlim(-1.5, 1.5)
+        drone_ani.set_ylim(1.5, 4.5)
         drone_ani.add_patch(box)
 
     def animate(i):
@@ -78,6 +78,7 @@ def animator (times, state_data) :
     intvl = dt * 1000
     ani = animation.FuncAnimation(fig, animate, frames=nframes, init_func = init, repeat=True,
                                 interval=intvl)
+    ani.save('2d_animation.gif', writer='imagemagick', fps=60)
     plt.show()
 
 if __name__ == "__main__":
