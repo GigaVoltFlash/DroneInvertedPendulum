@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 
 class Uav:
+    L = 0.5 # length of pendulum (m)
+
     '''
     Draws a quadrotor at a given position, with a given attitude.
     '''
@@ -43,9 +45,12 @@ class Uav:
         # Quadrotor arms
         self.arm_b1 = Line(ax)
         self.arm_b2 = Line(ax)
+
+        # Pendulum arm
+        self.arm_b3 = Line(ax)
     
 
-    def draw_at(self, x=np.array([0.0, 0.0, 0.0]).T, R=np.eye(3)):
+    def draw_at(self, x=np.array([0.0, 0.0, 0.0]).T, R=np.eye(3), pend_pos = np.zeros(2)):
         '''
         Draw the quadrotor at a given position, with a given direction
 
@@ -58,6 +63,10 @@ class Uav:
         Returns:
             None
         '''
+
+        #pendulum setup
+        r = pend_pos[0]
+        s = pend_pos[1]
 
         # First, clear the axis of all the previous plots
         self.ax.clear()
@@ -74,11 +83,16 @@ class Uav:
         # Arrows for the each body axis
         self.arrow_b1.draw_from_to(x, R.dot(self.b1) * self.arm_length * 1.8)
         self.arrow_b2.draw_from_to(x, R.dot(self.b2) * self.arm_length * 1.8)
-        self.arrow_b3.draw_from_to(x, R.dot(self.b3) * self.arm_length * 1.8)
+        # self.arrow_b3.draw_from_to(x, R.dot(self.b3) * self.arm_length * 1.8)
 
         # Quadrotor arms
         self.arm_b1.draw_from_to(x, x + R.dot(-self.b1) * self.arm_length)
         self.arm_b2.draw_from_to(x, x + R.dot(-self.b2) * self.arm_length)
+        
+        #Pendulum
+        # self.arm_b3.draw_from_to(x, x + R.dot(self.b3) * 0.5) # 0.5 is pendulum length
+        # self.arm_b3.draw_from_to(x, x * 0.5 + 1) # 0.5 is pendulum length
+        self.arm_b3.draw_from_to(x, x + [r, s, (self.L**2 + r**2 + s**2)**(0.5)])
 
 
 
@@ -91,15 +105,15 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
 
     
-    def update_plot(i, x, R):
-        uav_plot.draw_at(x[:, i], R[:, :, i])
+    def update_plot(i, x, R, pend_pos):
+        uav_plot.draw_at(x[:, i], R[:, :, i], pend_pos[:,i])
         
         # These limits must be set manually since we use
         # a different axis frame configuration than the
         # one matplotlib uses.
-        xmin, xmax = -2, 2
-        ymin, ymax = -2, 2
-        zmin, zmax = 4, 1
+        xmin, xmax = -2,2
+        ymin, ymax = -2,2
+        zmin, zmax = 5,1
 
         ax.set_xlim([xmin, xmax])
         ax.set_ylim([ymax, ymin])
@@ -133,13 +147,18 @@ if __name__ == '__main__':
     state_data[7] = file_data["s"].values
     nframes = len(times)
     x = np.array([state_data[0],state_data[1],state_data[2]])
+    pend_pos = np.array([state_data[6], state_data[7]])
+
+    #Populate Rotation Matrix
     R = np.zeros((3, 3, nframes))
     for i in range(nframes):
         ypr = np.array([state_data[3][i], state_data[4][i], state_data[5][i]])
         R[:, :, i] = ypr_to_R(ypr, degrees=False)
 
+    intvl = 1 # milliseconds
+
     # Run the simulation
-    ani = animation.FuncAnimation(fig, update_plot, frames=nframes, \
-        fargs=(x, R,))
+    ani = animation.FuncAnimation(fig, update_plot, frames=nframes,interval=intvl, \
+        fargs=(x, R,pend_pos))
     
     plt.show()
