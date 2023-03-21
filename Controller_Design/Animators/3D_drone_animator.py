@@ -160,5 +160,5 @@ if __name__ == '__main__':
     # Run the simulation
     ani = animation.FuncAnimation(fig, update_plot, frames=nframes,interval=intvl, \
         fargs=(x, R,pend_pos))
-    
-    plt.show()
+    ani.save('test.gif', writer='imagemagick', fps=60)
+    # plt.show()
