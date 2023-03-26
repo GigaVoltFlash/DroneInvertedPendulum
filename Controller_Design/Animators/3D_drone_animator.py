@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 class Uav:
-    L = 0.5 # length of pendulum (m)
+    L = 0.32 # length of pendulum (m)
 
     '''
     Draws a quadrotor at a given position, with a given attitude.
@@ -111,9 +111,9 @@ if __name__ == '__main__':
         # These limits must be set manually since we use
         # a different axis frame configuration than the
         # one matplotlib uses.
-        xmin, xmax = -2,2
-        ymin, ymax = -2,2
-        zmin, zmax = 5,1
+        xmin, xmax = -0.5,0.5
+        ymin, ymax = -0.5,0.5
+        zmin, zmax = 1,0
 
         ax.set_xlim([xmin, xmax])
         ax.set_ylim([ymax, ymin])
@@ -160,5 +160,5 @@ if __name__ == '__main__':
     # Run the simulation
     ani = animation.FuncAnimation(fig, update_plot, frames=nframes,interval=intvl, \
         fargs=(x, R,pend_pos))
-    ani.save('test.gif', writer='imagemagick', fps=60)
-    # plt.show()
+    # ani.save('test.gif', writer='imagemagick', fps=60)
+    plt.show()
